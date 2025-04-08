@@ -3,18 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Menu - Crypto Clicker</title>
+    <title>Hacker Clicker</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
-    <div id="menu-container">
-        <h1>Crypto Clicker</h1>
-        <button id="hackear">Hackear</button>
-        <button id="open-loja">Loja</button>
+    <!-- Menu Inicial -->
+    <div class="menu-container">
+        <h1>Hacker Clicker</h1>
+        <button id="novo-jogo-btn">Novo Jogo</button>
+        <button id="continuar-jogo-btn">Continuar</button>
     </div>
 
-    <script src="../controller/gameController.js"></script>
+    <!-- Tela do Jogo -->
+    <div class="game-container hidden">
+        <h2 id="btc">BTC: 0</h2>
+        <button id="hackear">Hackear</button>
+        <button id="open-upgrade-menu">lojinha</button>
+    </div>
 
+    <!-- Loja de Upgrades -->
+    <div id="upgrade-menu" class="hidden">
+        <div class="upgrade-content">
+            <h2>Upgrades</h2>
+            <ul id="upgrade-list"></ul>
+        </div>
+        <button id="close-upgrade-btn" class="close-btn">X</button>
+    </div>
+
+    <script src="../controller/gameController.js"></script> 
 </body>
 </html>
