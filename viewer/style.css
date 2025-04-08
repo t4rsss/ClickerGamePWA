@@ -13,7 +13,6 @@ html, body {
     color: #a3c255;
     display: flex;
     justify-content: center;
-    align-items: center;
     overflow: hidden;
     background-image: url('../assets/hck1.gif');
     background-size: cover;
