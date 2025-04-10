@@ -41,6 +41,36 @@ html, body {
     margin-bottom: 100px;
 }
 
+#novo-jogo-btn{
+    padding-top: 30px;
+    background-image: url(../assets/btnnewgame.gif);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    background-color: #16161c;
+    width: 100%;
+    height: auto;
+    color: rgba(0, 0, 0, 0.0);
+}
+
+#continuar-jogo-btn{
+    padding-top: 30px;
+    background-image: url(../assets/btncont.gif);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    background-color: #16161c;
+    width: 100%;
+    height: auto;
+    color: rgba(0, 0, 0, 0.0);
+}
+
+.menu-buttons{
+    padding-top: 100px;
+
+}
 
 /* Contêiner do jogo (inicialmente escondido) */
 .game-container {
@@ -65,7 +95,7 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #6fa341;
+    border: none;
 }
 
 .game-container h1, #btc {
@@ -97,12 +127,13 @@ html, body {
     text-align: center;
     margin: 0;
     background-image: url('../assets/teclado.png');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     width: 309px;
     height: 129px;
     border: none;
+    background-color:  #16161c;
 }
 
 #hackear:active {
@@ -173,7 +204,7 @@ button:active {
 
 .upgrade-content {
     padding: 20px;
-    padding-top: 200px;
+    top: 15%;
     color: white;
     text-align: center;
     width: 90%;
@@ -244,20 +275,62 @@ outline: none;
 }
 
 #login-container {
-    background-color: #1e1e1e;
+    background-color: rgba(0, 0, 0, 0.9);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
     text-align: center;
-    width: 300px;
+    width: 100%;
+    
 }
 
+.login-btn{
+    padding-top: 100px;   
+}
+
+
+
+#login-btn {
+    margin-top: 30px;
+    padding-top: 10px;
+    background-image: url(../assets/btnlogin.gif);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    background-color: #16161c;
+    width: 80%;
+    height: auto;
+    color: rgba(0, 0, 0, 0.0);
+    background-color:rgba(0, 0, 0, 0.0);
+
+}
+
+
+#register-btn{
+    padding-top: 10px;
+    background-image: url(../assets/btnsignup.gif);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    background-color: #16161c;
+    width: 80%;
+    height: auto;
+    color: rgba(0, 0, 0, 0.0);
+    background-color:rgba(0, 0, 0, 0.0);
+}
+
+
+
 input {
-    width: calc(100% - 20px);
+    width: 90%;
     padding: 10px;
     margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #333;
-    color: #fff;
+    border: solid 8px #1e2029;;
+    background-color: #16161c;
+    color: #6fa341;
+    height: 25px;
+    font-family: 'MinhaFonte';
+    font-size: 16px;
 }
