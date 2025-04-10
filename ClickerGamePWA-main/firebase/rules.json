@@ -1,0 +1,13 @@
+{
+    "rules": {
+      ".read": false,
+      ".write": false,
+      "players": {
+        "$uid": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
+        }
+      }
+    }
+  }
+  
