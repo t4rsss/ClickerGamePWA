@@ -81,11 +81,12 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 80%;
+    width: 100%;
     text-align: left;
     color: #a3c255;
     padding: 10px;
     z-index: 1;
+    background-color: #16161c;
 }
 
 #hackear {
@@ -214,18 +215,14 @@ button:active {
     border: 3px solid #6fa341;
 }
 
-/* Botão de fechar dentro do menu de upgrades */
 .close-btn {
-    height: auto;
-    width: 60px;
     font-size: 35px;
-    top: 0%;
-    right: 5%;
     position: absolute;
-    color: #6fa341;
+    color: white;
     background-color: rgba(56, 116, 80, 0.0);
     z-index: 2;
     text-align: right;
+    right: 10px
 }
 
 #close-upgrade-btn{
