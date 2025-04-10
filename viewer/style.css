@@ -7,7 +7,7 @@ html, body {
     touch-action: manipulation;
     height: 100%;
     width: 100%;
-    margin: 0;
+    margin: 0 auto;
     font-family: 'MinhaFonte';
     background-color: #16161c;
     color: #a3c255;
@@ -40,8 +40,6 @@ html, body {
     margin: 0 auto;
     margin-bottom: 100px;
 }
-
-
 
 
 /* Contêiner do jogo (inicialmente escondido) */
@@ -106,9 +104,11 @@ html, body {
     border: none;
 }
 
-#hackear:hover {
-    transform: translate(-50%, -55%); /* sobe um pouco ao passar o mouse */
+#hackear:active {
+    transform: translate(-50%, -50%) scale(0.95);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
+
 
 
 
@@ -161,7 +161,7 @@ button:disabled {
 
 .upgrade-content {
     padding: 20px;
-    padding-top: 50px;
+    padding-top: 200px;
     color: white;
     text-align: center;
     width: 90%;
@@ -169,7 +169,8 @@ button:disabled {
     position: relative;
     background-color: rgba(0, 0, 0, 0.5);
     background-image:url(../assets/lojinha.gif) ;
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     background-position: center;
     border: 1px solid #000000;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
@@ -216,7 +217,7 @@ button:disabled {
     top: 3.5%;
     right: 10%;
     position: absolute;
-    color: black;
+    color: #6fa341;
     background-color: rgba(56, 116, 80, 0.0);
     z-index: 2;
 }
