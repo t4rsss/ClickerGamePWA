@@ -1,266 +1,36 @@
-@font-face {
-  font-family: 'MinhaFonte';  
-  src: url('../assets/MinhaFonte.ttf') format('truetype'); 
-}
-
-html, body {
-    touch-action: manipulation;
-    height: 100%;
-    width: 100%;
-    margin: 0 auto;
-    font-family: 'MinhaFonte';
-    background-color: #16161c;
-    color: #a3c255;
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-    background-image: url('../assets/hck1.gif');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-/* Contêiner do menu principal */
-.menu-container {
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    padding: 30px;
-    padding-top: 100px;
-    width: 100%;
-    height: 100%;
-}
-
-#logo-container{
-    background-image: url('../assets/logo.png');
-    background-size: cover;
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-    margin-bottom: 100px;
-}
-
-
-/* Contêiner do jogo (inicialmente escondido) */
-.game-container {
-    text-align: center;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    box-sizing: border-box;
-}
-
-.game-container button {
-    height: 33px;
-    font-size: 13px;
-    margin: 3px 10px;
-    padding: 0 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid #6fa341;
-}
-
-.game-container h1, #btc {
+/* Reset básico */
+* {
     margin: 0;
-    font-size: 24px;
-}
-
-/* Estilo do texto de BTC */
-#btc {
-    font-size: 20px;
-    margin-bottom: 20px;
-    min-width: 120px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 80%;
-    text-align: left;
-    color: #a3c255;
-    padding: 10px;
-    z-index: 1;
-}
-
-#hackear {
-    position: fixed;
-    top: 85%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    margin: 0;
-    background-image: url('../assets/teclado.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 309px;
-    height: 129px;
-    border: none;
-}
-
-#hackear:active {
-    transform: translate(-50%, -50%) scale(0.95);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-
-/* Estilo dos botões */
-button {
-    font-family: 'MinhaFonte';  
-    background-color: rgba(56, 116, 80, 0.5);
-    color: #a3c255;
-    padding: 10px 20px;
-    margin: 10px 0;
-    border: 5px solid #6fa341;
-    cursor: pointer;
-    font-size: 18px;
-    width: 100%;
-    transition: background-color 0.3s ease;
-}
-
-/* Estilo dos botões ao passar o mouse */
-button:hover {
-    background-color: #12681c;
-}
-
-button:disabled {
-    background-color: #757575;
-    cursor: not-allowed;
-}
-
-button:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-
-
-/* Garante que o menu inicie oculto */
-.hidden {
-    display: none !important;
-}
-
-/* Torna o modal visível quando ativo */
-#upgrade-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color:none;
-    display: absolute;
-    justify-content: center;
-    align-items: center;
-    background-image:url(../assets/lojinha.gif) ;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-#upgrade-menu.active {
-    visibility: visible;
-    display: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-.upgrade-content {
-    padding: 20px;
-    padding-top: 200px;
-    color: white;
-    text-align: center;
-    width: 90%;
-    height: 100%;
-    position: relative;
-    background-color: none;;
-}
-
-#upgrade-list {
-    list-style-type: none;
     padding: 0;
-    margin: 0;
-    text-align: center;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-#upgrade-list li {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin: 10px 0;
+/* Corpo da página */
+body {
+    height: 100vh;
+    width: 100vw;
+    background-color: #121212;
+    color: white;
+    overflow: hidden;
 }
 
-
-
-/* Botão para abrir o menu de upgrades */
-#open-upgrade-menu {
-    position: fixed;
-    top: 15%;
-    left:10px;
-    background-image: url('../assets/btnloja.png');
-    background-size: cover;
-    cursor: pointer;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid #6fa341;
-}
-
-/* Botão de fechar dentro do menu de upgrades */
-.close-btn {
-    height: auto;
-    width: 60px;
-    font-size: 35px;
-    top: 0%;
-    right: 5%;
-    position: absolute;
-    color: #6fa341;
-    background-color: rgba(56, 116, 80, 0.0);
-    z-index: 2;
-    text-align: right;
-}
-
-#close-upgrade-btn{
-width: 30px;
-height: 28px;
-border: none; 
-outline: none; 
-}
-
-.upgrade-content button{
-    height: 40px;
-    font-size: 13px;
-    margin: 3px 10px;
-    padding: 0 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid #6fa341;
-}
-
-#login-container {
+/* Container principal */
+#main-container {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: none;
     background-color: #1e1e1e;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    text-align: center;
-    width: 300px;
+    display: flex;
+    flex-direction: column;
 }
 
-input {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin: 10px 0;
+/* Estilizando o iframe */
+iframe {
+    flex: 1;
+    width: 100%;
     border: none;
-    border-radius: 5px;
-    background-color: #333;
-    color: #fff;
+    background-color: #1e1e1e;
 }
