@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function mostrarJogo() {
         menuDiv.style.display = "none";
         gameDiv.classList.remove("hidden");
-        document.body.style.backgroundImage = "url('../assets/Porao.gif')";
+        document.body.style.backgroundImage = "url('../assets/fundo.gif')";
         document.body.style.backgroundSize = "contain";
     }
 
@@ -153,13 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
     mostrarMenu();
 });
 
+
 const botao = document.getElementById("hackear");
 
 botao.addEventListener("touchstart", () => {
-    botao.style.transform = "translate(-50%, -50%) scale(0.95)";
+    botao.style.transform = "scale(0.95)";
 });
 
 botao.addEventListener("touchend", () => {
-    botao.style.transform = "translate(-50%, -50%) scale(1)";
+    botao.style.transform = "scale(1)";
 });
-
