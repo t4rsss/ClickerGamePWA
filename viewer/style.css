@@ -104,11 +104,11 @@ html, body {
     padding: 10px;
     z-index: 1;
     background-color: #16161c;
+    border-bottom: #6fa341 solid 5px;
 }
 
 
 .computer {
-    top:50%;
     width: 100%; /* ou o tamanho que quiser limitar */
     height: auto;
     display: block;
@@ -228,6 +228,9 @@ button:active {
 
 /* Botão para abrir o menu de upgrades */
 #open-upgrade-menu {
+    position: fixed; /* fixa o botão na tela */
+    top: 10%;
+    left: 10px;
     background-image: url('../assets/btnloja.png');
     background-size: cover;
     background-position: center;
@@ -241,7 +244,6 @@ button:active {
     border: none;
     background-color: transparent;
 }
-
 
 .close-btn {
     font-size: 35px;
