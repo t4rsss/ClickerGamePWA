@@ -64,10 +64,10 @@ const registerContainer = document.getElementById('register-container');
 
 document.getElementById('show-register').onclick = () => {
     loginContainer.style.display = 'none';
-    registerContainer.style.display = 'flex';
+    registerContainer.style.display = 'block';
 };
 
 document.getElementById('show-login').onclick = () => {
     registerContainer.style.display = 'none';
-    loginContainer.style.display = 'flex';
+    loginContainer.style.display = 'block';
 };
