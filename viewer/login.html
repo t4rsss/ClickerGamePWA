@@ -16,9 +16,25 @@
             <input type="email" id="email" placeholder="Digite seu email">
             <input type="password" id="password" placeholder="Digite sua senha">
             <button id="login-btn">Login</button>
-            <button id="register-btn">Registrar</button>
+            <p>Não tem uma conta? <span id="show-register" style="color:#6fa341; cursor:pointer;">Registrar-se</span></p>
         </div>    
     </div>
+
+    
+    <div id="register-container" style="display:none;">
+        <div class="logo-container">
+            <img src="../assets/logo.gif" alt="Logo do Jogo" class="logo" width="100%" height="100%">
+        </div>
+        <div class="login-btn">
+            <input type="email" id="register-email" placeholder="Digite seu email">
+            <input type="password" id="register-password" placeholder="Digite sua senha">
+            <input type="password" id="confirm-password" placeholder="Confirme sua senha">
+            <button id="register-btn">Registrar</button>
+            <p>Já tem uma conta? <span id="show-login" style="color:#6fa341; cursor:pointer;">Voltar para o Login</span></p>
+        </div>    
+    </div>
+
+
 
     <script type="module" src="../firebase-auth.js"></script>
 

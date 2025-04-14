@@ -57,3 +57,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+
+const loginContainer = document.getElementById('login-container');
+const registerContainer = document.getElementById('register-container');
+
+document.getElementById('show-register').onclick = () => {
+    loginContainer.style.display = 'none';
+    registerContainer.style.display = 'flex';
+};
+
+document.getElementById('show-login').onclick = () => {
+    registerContainer.style.display = 'none';
+    loginContainer.style.display = 'flex';
+};
