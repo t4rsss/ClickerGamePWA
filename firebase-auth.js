@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (registerBtn) {
     registerBtn.addEventListener("click", () => {
       const email = document.getElementById("email").value;
-      const senha = document.getElementById("password").value;
+      const senha = document.getElementById("register-password").value;
 
       createUserWithEmailAndPassword(auth, email, senha)
         .then(() => {
