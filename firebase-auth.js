@@ -28,8 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("password").value;
+      const email = document.getElementById("email")?.value.trim();
+      const senha = document.getElementById("password")?.value.trim();
+
+      if (!email || !senha) {
+        alert("Preencha o e-mail e a senha!");
+        return;
+      }
 
       signInWithEmailAndPassword(auth, email, senha)
         .then(() => {
@@ -43,8 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (registerBtn) {
     registerBtn.addEventListener("click", () => {
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("register-password").value;
+      const email = document.getElementById("register-email")?.value.trim();
+      const senha = document.getElementById("register-password")?.value.trim();
+
+      if (!email || !senha) {
+        alert("Preencha o e-mail e a senha!");
+        return;
+      }
 
       createUserWithEmailAndPassword(auth, email, senha)
         .then(() => {
@@ -57,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 
 
 const loginContainer = document.getElementById('login-container');
