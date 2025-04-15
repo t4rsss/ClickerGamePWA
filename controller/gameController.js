@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btcDisplay = document.getElementById("btc");
     const hackearBtn = document.getElementById("hackear");
     const lojaBtn = document.getElementById("loja-btn");
+   
 
     console.log(menuDiv);  // Verifique se os elementos estão sendo corretamente selecionados
     console.log(gameDiv);
@@ -28,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
         menuDiv.style.display = "none";
         gameDiv.classList.remove("hidden");
         document.body.style.backgroundImage = "url('../assets/fundo.gif')";
-        document.body.style.backgroundSize = "contain";
     }
 
     // Função para exibir o menu
@@ -84,25 +84,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Atualizar a loja de upgrades
         function atualizarLoja() {
-            upgradeList.innerHTML = "";
+            upgradeList.innerHTML = ""; // Limpar a lista
             upgrades.forEach((upgrade, index) => {
                 const item = document.createElement("li");
                 item.innerHTML = `${upgrade.nome} - ${upgrade.preco} BTC 
                     <button class="upgrade-btn" data-index="${index}">Comprar</button>`;
+                
+                // Adicionar o item na lista
                 upgradeList.appendChild(item);
             });
-
+        
             // Evento de compra de upgrade
             document.querySelectorAll('.upgrade-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
+                    // Tocar o som ao clicar
+                    buysound.currentTime = 0; // Recomeçar o som do início
+                    buysound.play();
+        
                     const index = parseInt(btn.dataset.index);
                     if (btc >= upgrades[index].preco) {
                         btc -= upgrades[index].preco;
                         upgrades[index].efeito();
                         upgrades[index].preco = Math.ceil(upgrades[index].preco * 1.8);
-                        atualizarLoja();
-                        atualizarDisplay();
-                        salvarProgresso(btc, btcPorClique, btcPorSegundo);
+                        atualizarLoja(); // Atualiza a loja com novos preços e upgrades
+                        atualizarDisplay(); // Atualiza a interface com o novo saldo de BTC
+                        salvarProgresso(btc, btcPorClique, btcPorSegundo); // Salva progresso
+                    } else {
+                        alert("Você não tem BTC suficiente!");
                     }
                 });
             });
@@ -163,3 +171,25 @@ botao.addEventListener("touchstart", () => {
 botao.addEventListener("touchend", () => {
     botao.style.transform = "scale(1)";
 });
+
+const btnSound = new Audio('../assets/sounds/btnsound.wav');
+const tecladoSound = new Audio('../assets/sounds/tecladosound.wav');
+const buysound = new Audio('../assets/sounds/buysound.wav');
+
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', () => {
+        if (button.id !== 'hackear') {
+            btnSound.currentTime = 0;
+            btnSound.play();
+        }
+    });
+});
+
+// Para o botão hackear
+const hackearBtn = document.getElementById('hackear');
+if (hackearBtn) {
+    hackearBtn.addEventListener('click', () => {
+        tecladoSound.currentTime = 0;
+        tecladoSound.play();
+    });
+}

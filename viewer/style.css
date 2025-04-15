@@ -185,10 +185,9 @@ button:active {
     justify-content: center;
     align-items: center;
     background-image:url(../assets/lojinha.gif) ;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    border: none;
 }
 
 #upgrade-menu.active {
@@ -225,28 +224,42 @@ button:active {
 }
 
 
+.btnloja{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+    height: 30px;
+    padding-top: 35px;
+}
 
 /* Botão para abrir o menu de upgrades */
 #open-upgrade-menu {
-    position: fixed; /* fixa o botão na tela */
-    top: 10%;
     left: 10px;
     background-image: url('../assets/btnloja.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
     background-color: transparent;
+    margin:10px;
 }
 
+h2 {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    
+}
+
+
 .close-btn {
-    font-size: 35px;
     position: absolute;
     color: white;
     background-color: rgba(56, 116, 80, 0.0);
@@ -256,8 +269,8 @@ button:active {
 }
 
 #close-upgrade-btn{
-width: 30px;
-height: 28px;
+width: 40px;
+height: 38px;
 border: none; 
 outline: none; 
 }
@@ -295,12 +308,11 @@ outline: none;
 
 
 .login-btn{
-    padding-top: 100px;   
+    padding-top: 70px;
 }
 
 #login-btn {
     margin-top: 30px;
-    padding-top: 10px;
     background-image: url(../assets/btnlogin.gif);
     background-size: contain;
     background-position: center;
