@@ -123,10 +123,10 @@ html, body {
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-    width: 309px;
-    height: 129px;
+    width: 90%;
+    height: 170px;
     border: none;
-    background-color: #16161c;
+    background-color: rgb(22, 22, 28,0.0);
     cursor: pointer;
     transition: transform 0.1s ease-in-out;
 }
