@@ -237,7 +237,7 @@ button:active {
 #open-upgrade-menu {
     left: 10px;
     background-image: url('../assets/btnloja.png');
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
