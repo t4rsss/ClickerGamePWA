@@ -22,8 +22,8 @@
 
     <!-- Tela do Jogo -->
     <div class="game-container">
-        <h2 id="btc">BTC: 0</h2>
-        
+        <h2 id="btc">BTC: 0</h2>    
+    <div class="game-content">    
         <div class="btnloja">
             <button id="open-upgrade-menu"></button>
         </div>
@@ -32,19 +32,22 @@
         
         <!-- Botão hackear -->
         <button id="hackear"></button>
-      </div>
+        </div> 
+    </div>
       
 
     <!-- Loja de Upgrades -->
     <div id="upgrade-menu" class="hidden">
         <div class="upgrade-content">
-    
-            
-         
-            <h2>Upgrades <button id="close-upgrade-btn" class="close-btn" style="font-size: 30px;" >X</button></h2>
+            <h2>Upgrades <button id="close-upgrade-btn" class="close-btn" style="font-size: 30px;">X</button></h2>
+            <div class="upgrade-sections">
+            </div>            
+            <div id="upgrade-sections">
+            </div>
             <ul id="upgrade-list"></ul>
         </div>
     </div>
+    
 
     <script src="../controller/gameController.js"></script> 
 </body>

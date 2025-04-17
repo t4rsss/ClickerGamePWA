@@ -10,60 +10,104 @@ document.addEventListener("DOMContentLoaded", () => {
     const btcDisplay = document.getElementById("btc");
     const hackearBtn = document.getElementById("hackear");
     const lojaBtn = document.getElementById("loja-btn");
-   
 
-    console.log(menuDiv);  // Verifique se os elementos estão sendo corretamente selecionados
-    console.log(gameDiv);
-    console.log(novoJogoBtn);
-    console.log(continuarJogoBtn);
-    console.log(upgradeMenu);
-    console.log(openUpgradeBtn);
-    console.log(closeUpgradeBtn);
-    console.log(upgradeList);
-    console.log(btcDisplay);
-    console.log(hackearBtn);
-    console.log(lojaBtn);
+    let btc = 0;
+    let btcPorClique = 1;
+    let btcPorSegundo = 0;
 
-    // Função para exibir o jogo
+    let upgrades = { 
+        clique: [],
+        producao: [],
+        ambiente: []
+    };
+
     function mostrarJogo() {
         menuDiv.style.display = "none";
         gameDiv.classList.remove("hidden");
         document.body.style.backgroundImage = "url('../assets/fundo.gif')";
     }
 
-    // Função para exibir o menu
     function mostrarMenu() {
         menuDiv.style.display = "block";
         gameDiv.classList.add("hidden");
     }
 
-    // Função para salvar progresso
-    function salvarProgresso(btc, btcPorClique, btcPorSegundo) {
-        localStorage.setItem('btc', btc);
-        localStorage.setItem('btcPorClique', btcPorClique);
-        localStorage.setItem('btcPorSegundo', btcPorSegundo);
-    }
-
-    // Função para carregar progresso
-    function carregarProgresso() {
-        return {
-            btc: parseFloat(localStorage.getItem('btc')) || 0,
-            btcPorClique: parseInt(localStorage.getItem('btcPorClique')) || 1,
-            btcPorSegundo: parseInt(localStorage.getItem('btcPorSegundo')) || 0
+    function salvarProgresso() {
+        const progresso = {
+            btc,
+            btcPorClique,
+            btcPorSegundo,
+            upgrades
         };
+        localStorage.setItem("progresso", JSON.stringify(progresso));
     }
 
-    // Função para inicializar o jogo
+    function carregarProgresso() {
+        const progressoSalvo = localStorage.getItem("progresso");
+        if (progressoSalvo) {
+            return JSON.parse(progressoSalvo);
+        } else {
+            return {
+                btc: 0,
+                btcPorClique: 1,
+                btcPorSegundo: 0,
+                upgrades: {}
+            };
+        }
+    }
+
     function inicializarJogo() {
-        let { btc, btcPorClique, btcPorSegundo } = carregarProgresso();
+        const progresso = carregarProgresso();
+        btc = progresso.btc;
+        btcPorClique = progresso.btcPorClique;
+        btcPorSegundo = progresso.btcPorSegundo;
 
-        let upgrades = [
-            { nome: "Melhor CPU", preco: 10, efeito: () => btcPorClique += 1 },
-            { nome: "Hack Automático", preco: 50, efeito: () => btcPorSegundo += 1 },
-            { nome: "Proxy Rápido", preco: 100, efeito: () => btcPorClique += 2 }
-        ];
+        let upgrades = {
+            clique: [
+                { nome: "Divulgar tigrinho", preco: 10, comprado: false, repetivel: true, efeito: () => btcPorClique += 1 },
+                { nome: "Enviar Trojan por e-mail", preco: 50, comprado: false, repetivel: true, efeito: () => btcPorClique += 5 },
+                { nome: "Clonar Whatsapp de Velinhos", preco: 200, comprado: false, repetivel: true, efeito: () => btcPorClique += 20 },
+                { nome: "Divulgar golpe no instagram", preco: 300, comprado: false, repetivel: true, efeito: () => btcPorClique += 30 },
+                { nome: "Enviam spam no Face", preco: 500, comprado: false, repetivel: true, efeito: () => btcPorClique += 50 },               
+                { nome: "Clonar cartão da mãe", preco: 600, comprado: false, repetivel: false, efeito: () => btcPorClique += 60 },
+                { nome: "Fechar contrato com casa de Aposta", preco: 1000, comprado: false, repetivel: false, efeito: () => btcPorClique += 150 },
+            ],
+            producao: [
+                { nome: "Minerar com Máquinas Alheias", preco: 50, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 1 },
+                { nome: "Melhorar Mineração", preco: 100, comprado: false, repetivel: true, efeito: () => btcPorSegundo * 1.5 },
+                { nome: "Fazer gato net pra minerar", preco: 500, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 50 },
+                { nome: "Fazer Overclock na placa de video", preco: 700, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 100 },
+                { nome: "Turbinar Processador", preco: 1200, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 200 },
+                { nome: "Placa Mãe super gamer", preco: 1500, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 300 },
+                { nome: "Muito RGB bem gamer", preco: 2000, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 500 }
+            ],
+            ambiente: [
+                { 
+                    nome: "Comprar Apartamento", 
+                    preco: 400000,
+                    comprado: false,
+                    repetivel: false,  // Não repetível porque é um upgrade único
+                    efeito: () => {
+                        const computerImage = document.querySelector('.computer');
+                        if (computerImage) computerImage.src = "../assets/apartamento.gif";
+                    }
+                }
+            ]
+        };
 
-        // Eventos para abrir e fechar a loja de upgrades
+        // Se upgrades salvos existirem, sobrescreve os "comprados"
+        if (progresso.upgrades) {
+            for (let categoria in progresso.upgrades) {
+                if (upgrades[categoria]) {
+                    progresso.upgrades[categoria].forEach((itemSalvo, index) => {
+                        if (upgrades[categoria][index]) {
+                            upgrades[categoria][index].comprado = itemSalvo.comprado;
+                        }
+                    });
+                }
+            }
+        }
+
         openUpgradeBtn.addEventListener("click", () => {
             upgradeMenu.classList.remove("hidden");
             hackearBtn.style.display = "none";
@@ -77,82 +121,92 @@ document.addEventListener("DOMContentLoaded", () => {
             openUpgradeBtn.style.display = "block";
         });
 
-        // Atualizar o display de BTC
         function atualizarDisplay() {
             btcDisplay.innerText = `BTC: ${btc.toFixed(2)}`;
         }
 
-        // Atualizar a loja de upgrades
-        function atualizarLoja() {
-            upgradeList.innerHTML = ""; // Limpar a lista
-            upgrades.forEach((upgrade, index) => {
-                const item = document.createElement("li");
-                item.innerHTML = `${upgrade.nome} - ${upgrade.preco} BTC 
-                    <button class="upgrade-btn" data-index="${index}">Comprar</button>`;
-                
-                // Adicionar o item na lista
-                upgradeList.appendChild(item);
-            });
+        function abreviarPreco(preco) {
+            if (preco >= 1000000) {
+                return (preco / 1000000).toFixed(1) + 'M'; // Ex: 1.5M para 1.500.000
+            } else if (preco >= 1000) {
+                return (preco / 1000).toFixed(1) + 'k'; // Ex: 3.2k para 3.200
+            } else {
+                return preco.toString(); // Retorna o valor normal se for menor que 1000
+            }
+        }
         
-            // Evento de compra de upgrade
+
+
+        function atualizarLoja() {
+            upgradeList.innerHTML = "";
+        
+            for (let categoria in upgrades) {
+                const titulo = document.createElement("h4");
+                titulo.textContent = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+                upgradeList.appendChild(titulo);
+        
+                upgrades[categoria].forEach((upgrade, index) => { 
+                    if (upgrade.repetivel || !upgrade.comprado) {  // Mostra se for repetível ou não comprado
+                        const precoAbreviado = abreviarPreco(upgrade.preco);
+                        const item = document.createElement("li");
+                        item.innerHTML = `<button class="upgrade-btn" data-categoria="${categoria}" data-index="${index}">
+                                            ${upgrade.nome} - ${precoAbreviado} BTC
+                                          </button>`;
+                        upgradeList.appendChild(item);
+                    }
+                });
+            }
+        
             document.querySelectorAll('.upgrade-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    // Tocar o som ao clicar
-                    buysound.currentTime = 0; // Recomeçar o som do início
-                    buysound.play();
-        
+                    const categoria = btn.dataset.categoria;
                     const index = parseInt(btn.dataset.index);
-                    if (btc >= upgrades[index].preco) {
-                        btc -= upgrades[index].preco;
-                        upgrades[index].efeito();
-                        upgrades[index].preco = Math.ceil(upgrades[index].preco * 1.8);
-                        atualizarLoja(); // Atualiza a loja com novos preços e upgrades
-                        atualizarDisplay(); // Atualiza a interface com o novo saldo de BTC
-                        salvarProgresso(btc, btcPorClique, btcPorSegundo); // Salva progresso
-                    } else {
-                        alert("Você não tem BTC suficiente!");
-                    }
+                    const upgrade = upgrades[categoria][index];
+                    if (btc >= upgrade.preco) {
+                        btc -= upgrade.preco;
+                        upgrade.efeito();
+                    
+                        if (!upgrade.repetivel) {
+                            upgrade.comprado = true;  // Marca como comprado só se não for repetível
+                        } else {
+                            upgrade.preco = Math.ceil(upgrade.preco * 1.8);  // se repetível, aumenta o preço
+                        }
+                    
+                        atualizarLoja();
+                        atualizarDisplay();
+                        salvarProgresso(btc, btcPorClique, btcPorSegundo);
+                        buysound.currentTime = 0;
+                        buysound.play();
+                    }                    
                 });
             });
         }
+        
+      
 
-        // Evento de hackear BTC
         hackearBtn.addEventListener("click", () => {
             btc += btcPorClique;
             atualizarDisplay();
             salvarProgresso(btc, btcPorClique, btcPorSegundo);
         });
 
-        // Incrementar BTC por segundo
         setInterval(() => {
             btc += btcPorSegundo;
             atualizarDisplay();
             salvarProgresso(btc, btcPorClique, btcPorSegundo);
         }, 1000);
 
-        // Inicializar a loja e o display
-        openUpgradeBtn.addEventListener("click", () => {
-            upgradeMenu.classList.remove("hidden");
-            atualizarLoja();
-        });
-
-        closeUpgradeBtn.addEventListener("click", () => {
-            upgradeMenu.classList.add("hidden");
-        });
-
         upgradeMenu.classList.add("hidden");
         atualizarDisplay();
         atualizarLoja();
     }
 
-    // Evento para novo jogo
     novoJogoBtn.addEventListener("click", () => {
         localStorage.clear();
         mostrarJogo();
         inicializarJogo();
     });
 
-    // Evento para continuar o jogo
     continuarJogoBtn.addEventListener("click", () => {
         mostrarJogo();
         inicializarJogo();
@@ -160,7 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     mostrarMenu();
 });
-
 
 const botao = document.getElementById("hackear");
 
@@ -185,7 +238,6 @@ document.querySelectorAll('button').forEach(button => {
     });
 });
 
-// Para o botão hackear
 const hackearBtn = document.getElementById('hackear');
 if (hackearBtn) {
     hackearBtn.addEventListener('click', () => {

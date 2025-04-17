@@ -83,6 +83,12 @@ html, body {
     box-sizing: border-box;
   }
 
+  .game-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
 
 
 .game-container h1, #btc {
@@ -199,7 +205,7 @@ button:active {
 
 .upgrade-content {
     padding: 20px;
-    top: 15%;
+    top: 55px;
     color: white;
     text-align: center;
     width: 90%;
@@ -213,6 +219,8 @@ button:active {
     padding: 0;
     margin: 0;
     text-align: center;
+    max-height: 70vh;  
+    overflow-y: auto;
 }
 
 #upgrade-list li {
@@ -220,7 +228,6 @@ button:active {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin: 10px 0;
 }
 
 
@@ -276,15 +283,25 @@ outline: none;
 }
 
 .upgrade-content button{
-    height: 40px;
-    font-size: 13px;
+    height: 50px;
+    font-size: 18px;
     margin: 3px 10px;
     padding: 0 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid #6fa341;
+    border: 5px solid #6fa341;
 }
+.upgrade-btn {
+    color: rgb(255, 255, 255);              
+    border: none;              
+    padding: 10px 20px;            
+    cursor: pointer;          
+    transition: all 0.3s ease; 
+    display: inline-block;
+    min-height: 100px; 
+}
+
 
 #login-container {
     background-color: rgba(0, 0, 0, 0.9);
