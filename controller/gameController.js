@@ -226,9 +226,35 @@ botao.addEventListener("touchend", () => {
 });
 
 const btnSound = new Audio('../assets/sounds/btnsound.wav');
-const tecladoSound = new Audio('../assets/sounds/tecladosound.wav');
-const buysound = new Audio('../assets/sounds/buysound.wav');
+btnSound.load();
 
+const tecladoSound = new Audio('../assets/sounds/tecladosound.wav');
+tecladoSound.load();
+
+const buysound = new Audio('../assets/sounds/buysound.wav');
+buysound.load();
+
+// Função para desbloquear o áudio no primeiro toque
+function desbloquearAudio() {
+    btnSound.play().catch(() => {});
+    tecladoSound.play().catch(() => {});
+    buysound.play().catch(() => {});
+
+    btnSound.pause();
+    tecladoSound.pause();
+    buysound.pause();
+
+    btnSound.currentTime = 0;
+    tecladoSound.currentTime = 0;
+    buysound.currentTime = 0;
+
+    document.removeEventListener('touchstart', desbloquearAudio);
+}
+
+// Adiciona o desbloqueio para mobile
+document.addEventListener('touchstart', desbloquearAudio, { once: true });
+
+// Sons para botões normais
 document.querySelectorAll('button').forEach(button => {
     button.addEventListener('click', () => {
         if (button.id !== 'hackear') {
@@ -238,6 +264,7 @@ document.querySelectorAll('button').forEach(button => {
     });
 });
 
+// Som especial para o botão hackear
 const hackearBtn = document.getElementById('hackear');
 if (hackearBtn) {
     hackearBtn.addEventListener('click', () => {
