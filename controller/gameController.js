@@ -145,15 +145,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 titulo.textContent = categoria.charAt(0).toUpperCase() + categoria.slice(1);
                 upgradeList.appendChild(titulo);
         
-                upgrades[categoria].forEach((upgrade, index) => { 
-                    if (upgrade.repetivel || !upgrade.comprado) {  // Mostra se for repetível ou não comprado
-                        const precoAbreviado = abreviarPreco(upgrade.preco);
-                        const item = document.createElement("li");
-                        item.innerHTML = `<button class="upgrade-btn" data-categoria="${categoria}" data-index="${index}">
-                                            ${upgrade.nome} - ${precoAbreviado} BTC
-                                          </button>`;
-                        upgradeList.appendChild(item);
+                upgrades[categoria].forEach((upgrade, index) => {
+                    const precoAbreviado = abreviarPreco(upgrade.preco);
+                    const item = document.createElement("li");
+        
+                    const botao = document.createElement("button");
+                    botao.classList.add("upgrade-btn");
+                    botao.dataset.categoria = categoria;
+                    botao.dataset.index = index;
+                    botao.textContent = `${upgrade.nome} - ${precoAbreviado} BTC`;
+        
+                    // Verifica se tem BTC suficiente
+                    if (btc < upgrade.preco) {
+                        botao.classList.add("locked");
+                    } else {
+                        botao.classList.remove("locked");
                     }
+        
+                    item.appendChild(botao);
+                    upgradeList.appendChild(item);
                 });
             }
         
@@ -162,25 +172,28 @@ document.addEventListener("DOMContentLoaded", () => {
                     const categoria = btn.dataset.categoria;
                     const index = parseInt(btn.dataset.index);
                     const upgrade = upgrades[categoria][index];
+        
                     if (btc >= upgrade.preco) {
                         btc -= upgrade.preco;
                         upgrade.efeito();
-                    
+        
                         if (!upgrade.repetivel) {
-                            upgrade.comprado = true;  // Marca como comprado só se não for repetível
+                            upgrade.comprado = true;
                         } else {
-                            upgrade.preco = Math.ceil(upgrade.preco * 1.8);  // se repetível, aumenta o preço
+                            upgrade.preco = Math.ceil(upgrade.preco * 1.8);
                         }
-                    
+        
                         atualizarLoja();
                         atualizarDisplay();
                         salvarProgresso(btc, btcPorClique, btcPorSegundo);
+        
                         buysound.currentTime = 0;
                         buysound.play();
-                    }                    
+                    }
                 });
             });
         }
+        
         
       
 

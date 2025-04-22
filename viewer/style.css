@@ -276,10 +276,10 @@ h2 {
 }
 
 #close-upgrade-btn{
-width: 40px;
-height: 38px;
-border: none; 
-outline: none; 
+    width: 40px;
+    height: 38px;
+    border: none; 
+    outline: none; 
 }
 
 .upgrade-content button{
@@ -301,6 +301,16 @@ outline: none;
     display: inline-block;
     min-height: 100px; 
 }
+
+
+.upgrade-btn.locked {
+    background-color: rgb(37, 37, 37,0.2);
+    border: 5px solid rgb(0, 0, 0,0.2);
+    color: rgb(204, 204, 204,0.2);
+    cursor: not-allowed;
+}
+
+
 
 
 #login-container {
