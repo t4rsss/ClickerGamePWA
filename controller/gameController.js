@@ -225,13 +225,13 @@ botao.addEventListener("touchend", () => {
     botao.style.transform = "scale(1)";
 });
 
-const btnSound = new Audio('../assets/sounds/btnsound.wav');
+const btnSound = new Audio('../assets/sounds/btnsound.mp3');
 btnSound.load();
 
-const tecladoSound = new Audio('../assets/sounds/tecladosound.wav');
+const tecladoSound = new Audio('../assets/sounds/tecladosound.mp3');
 tecladoSound.load();
 
-const buysound = new Audio('../assets/sounds/buysound.wav');
+const buysound = new Audio('../assets/sounds/buysound.mp3');
 buysound.load();
 
 // Função para desbloquear o áudio no primeiro toque
