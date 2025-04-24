@@ -121,9 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
             openUpgradeBtn.style.display = "block";
         });
 
-        function atualizarDisplay() {
-            btcDisplay.innerText = `BTC: ${btc.toFixed(2)}`;
-        }
 
         function abreviarPreco(preco) {
             if (preco >= 1000000) {
@@ -135,7 +132,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         
-
+        function atualizarDisplay() {
+            document.getElementById("btc").textContent = abreviarPreco(btc) + " BTC";
+        }
+        
 
         function atualizarLoja() {
             upgradeList.innerHTML = "";
@@ -146,27 +146,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 upgradeList.appendChild(titulo);
         
                 upgrades[categoria].forEach((upgrade, index) => {
-                    const precoAbreviado = abreviarPreco(upgrade.preco);
-                    const item = document.createElement("li");
+                    // Só mostra upgrade se ele não foi comprado OU se ele é repetível
+                    if (!upgrade.comprado || upgrade.repetivel) {
+                        const precoAbreviado = abreviarPreco(upgrade.preco);
+                        
+                        const item = document.createElement("li");
+                        const podeComprar = btc >= upgrade.preco;
         
-                    const botao = document.createElement("button");
-                    botao.classList.add("upgrade-btn");
-                    botao.dataset.categoria = categoria;
-                    botao.dataset.index = index;
-                    botao.textContent = `${upgrade.nome} - ${precoAbreviado} BTC`;
-        
-                    // Verifica se tem BTC suficiente
-                    if (btc < upgrade.preco) {
-                        botao.classList.add("locked");
-                    } else {
-                        botao.classList.remove("locked");
+                        item.innerHTML = `<button class="upgrade-btn ${!podeComprar ? 'locked' : ''}" data-categoria="${categoria}" data-index="${index}">
+                        ${upgrade.nome} <br> ${abreviarPreco(upgrade.preco)} BTC
+                        </button>`;
+                        upgradeList.appendChild(item);
                     }
-        
-                    item.appendChild(botao);
-                    upgradeList.appendChild(item);
                 });
             }
         
+            // Adiciona os eventos de clique depois de atualizar a lista
             document.querySelectorAll('.upgrade-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const categoria = btn.dataset.categoria;
@@ -177,22 +172,22 @@ document.addEventListener("DOMContentLoaded", () => {
                         btc -= upgrade.preco;
                         upgrade.efeito();
         
-                        if (!upgrade.repetivel) {
-                            upgrade.comprado = true;
-                        } else {
+                        if (upgrade.repetivel) {
                             upgrade.preco = Math.ceil(upgrade.preco * 1.8);
+                        } else {
+                            upgrade.comprado = true;
                         }
         
                         atualizarLoja();
                         atualizarDisplay();
                         salvarProgresso(btc, btcPorClique, btcPorSegundo);
-        
                         buysound.currentTime = 0;
                         buysound.play();
                     }
                 });
             });
         }
+        
         
         
       
