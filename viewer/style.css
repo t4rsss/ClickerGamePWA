@@ -283,7 +283,7 @@ h2 {
 }
 
 .upgrade-content button{
-    height: 50px;
+    height: 60px;
     font-size: 18px;
     margin: 3px 10px;
     padding: 0 15px;
@@ -299,7 +299,7 @@ h2 {
     cursor: pointer;          
     transition: all 0.3s ease; 
     display: inline-block;
-    min-height: 100px; 
+    min-height: 140px; 
 }
 
 
@@ -309,8 +309,6 @@ h2 {
     color: rgb(204, 204, 204,0.2);
     cursor: not-allowed;
 }
-
-
 
 
 #login-container {
