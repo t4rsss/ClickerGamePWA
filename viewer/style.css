@@ -91,15 +91,20 @@ html, body {
   }
 
 
-.game-container h1, #btc {
+.game-container h1 {
     margin: 0;
     font-size: 24px;
 }
 
 /* Estilo do texto de BTC */
-#btc {
-    font-size: 20px;
-    margin-bottom: 20px;
+
+
+.game-header{
+    display: flex;
+    gap: 20px; 
+    flex-wrap: wrap; 
+    justify-content: center;
+    margin-bottom: 5px;
     min-width: 120px;
     position: absolute;
     top: 0;
@@ -107,11 +112,16 @@ html, body {
     width: 100%;
     text-align: left;
     color: #a3c255;
-    padding: 10px;
     z-index: 1;
     background-color: #16161c;
     border-bottom: #6fa341 solid 5px;
+    height: 50px;
 }
+
+
+
+
+
 
 
 .computer {
@@ -284,7 +294,7 @@ h2 {
 
 .upgrade-content button{
     height: 60px;
-    font-size: 18px;
+    font-size: 16px;
     margin: 3px 10px;
     padding: 0 15px;
     display: flex;

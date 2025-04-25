@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         gameDiv.classList.add("hidden");
     }
 
+
     function salvarProgresso() {
         const progresso = {
             btc,
@@ -42,6 +43,31 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("progresso", JSON.stringify(progresso));
     }
 
+    function salvarUpgrades() {
+        const upgradesSalvos = JSON.stringify(upgrades);
+        localStorage.setItem("upgradesSalvos", upgradesSalvos);
+    }
+    
+    function carregarUpgrades() {
+        const dadosSalvos = localStorage.getItem("upgradesSalvos");
+        if (dadosSalvos) {
+            const upgradesCarregados = JSON.parse(dadosSalvos);
+    
+            for (let categoria in upgradesCarregados) {
+                upgrades[categoria] = upgradesCarregados[categoria].map((upgrade, i) => {
+                    // Reassocia a função "efeito" após o parse
+                    let original = upgrades[categoria][i];
+                    return {
+                        ...upgrade,
+                        efeito: original.efeito
+                    };
+                });
+            }
+        }
+    }
+    
+    
+    
     function carregarProgresso() {
         const progressoSalvo = localStorage.getItem("progresso");
         if (progressoSalvo) {
@@ -61,20 +87,21 @@ document.addEventListener("DOMContentLoaded", () => {
         btc = progresso.btc;
         btcPorClique = progresso.btcPorClique;
         btcPorSegundo = progresso.btcPorSegundo;
+        carregarUpgrades();
 
         let upgrades = {
             clique: [
-                { nome: "Divulgar tigrinho", preco: 10, comprado: false, repetivel: true, efeito: () => btcPorClique += 1 },
-                { nome: "Enviar Trojan por e-mail", preco: 50, comprado: false, repetivel: true, efeito: () => btcPorClique += 5 },
-                { nome: "Clonar Whatsapp de Velinhos", preco: 200, comprado: false, repetivel: true, efeito: () => btcPorClique += 20 },
-                { nome: "Divulgar golpe no instagram", preco: 300, comprado: false, repetivel: true, efeito: () => btcPorClique += 30 },
-                { nome: "Enviam spam no Face", preco: 500, comprado: false, repetivel: true, efeito: () => btcPorClique += 50 },               
+                { nome: "Divulgar tigrinho", preco: 10, comprado: false, repetivel: true, nivel: 1, efeito: function () { btcPorClique += this.nivel; } },
+                { nome: "Enviar Trojan por e-mail", preco: 50, comprado: false, repetivel: true, nivel: 1, efeito: function () { btcPorClique += 5 * this.nivel; } },
+                { nome: "Clonar Whatsapp de Velinhos", preco: 200, comprado: false, repetivel: true, nivel: 1, efeito: function () { btcPorClique += 20 * this.nivel; } },
+                { nome: "Divulgar golpe no instagram", preco: 300, comprado: false, repetivel: true, nivel: 1, efeito: function () { btcPorClique += 30 * this.nivel; } },
+                { nome: "Enviam spam no Face", preco: 500, comprado: false, repetivel: true, nivel: 1, efeito: function () { btcPorClique += 50 * this.nivel; } },               
                 { nome: "Clonar cartão da mãe", preco: 600, comprado: false, repetivel: false, efeito: () => btcPorClique += 60 },
                 { nome: "Fechar contrato com casa de Aposta", preco: 1000, comprado: false, repetivel: false, efeito: () => btcPorClique += 150 },
             ],
             producao: [
                 { nome: "Minerar com Máquinas Alheias", preco: 50, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 1 },
-                { nome: "Melhorar Mineração", preco: 100, comprado: false, repetivel: true, efeito: () => btcPorSegundo * 1.5 },
+                { nome: "Melhorar Mineração", preco: 100, comprado: false, repetivel: true, nivel: 1, efeito: function () { btcPorSegundo += 2 * this.nivel; } },
                 { nome: "Fazer gato net pra minerar", preco: 500, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 50 },
                 { nome: "Fazer Overclock na placa de video", preco: 700, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 100 },
                 { nome: "Turbinar Processador", preco: 1200, comprado: false, repetivel: false, efeito: () => btcPorSegundo += 200 },
@@ -86,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     nome: "Comprar Apartamento", 
                     preco: 400000,
                     comprado: false,
-                    repetivel: false,  // Não repetível porque é um upgrade único
+                    repetivel: false,
                     efeito: () => {
                         const computerImage = document.querySelector('.computer');
                         if (computerImage) computerImage.src = "../assets/apartamento.gif";
@@ -94,6 +121,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             ]
         };
+        
+        
 
         // Se upgrades salvos existirem, sobrescreve os "comprados"
         if (progresso.upgrades) {
@@ -134,6 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
         
         function atualizarDisplay() {
             document.getElementById("btc").textContent = abreviarPreco(btc) + " BTC";
+            document.getElementById('btc-clique').textContent = `P/click: ${abreviarPreco(btcPorClique)}`;
+            document.getElementById('btc-segundo').textContent = `P/seg: ${abreviarPreco(btcPorSegundo)}`;
         }
         
 
@@ -153,9 +184,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         const item = document.createElement("li");
                         const podeComprar = btc >= upgrade.preco;
         
-                        item.innerHTML = `<button class="upgrade-btn ${!podeComprar ? 'locked' : ''}" data-categoria="${categoria}" data-index="${index}">
-                        ${upgrade.nome} <br> ${abreviarPreco(upgrade.preco)} BTC
-                        </button>`;
+                        item.innerHTML = `
+                        <button class="upgrade-btn ${!podeComprar ? 'locked' : ''}" data-categoria="${categoria}" data-index="${index}">
+                          ${upgrade.nome}<br>
+                          ${abreviarPreco(upgrade.preco)} BTC <br>
+                          ${upgrade.nivel ? ' (Nível ' + upgrade.nivel + ')' : ''}
+                        </button>
+                      `;                      
                         upgradeList.appendChild(item);
                     }
                 });
@@ -173,11 +208,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         upgrade.efeito();
         
                         if (upgrade.repetivel) {
-                            upgrade.preco = Math.ceil(upgrade.preco * 1.8);
+                            upgrade.nivel++;
+                            upgrade.efeito();
+                            upgrade.preco = Math.floor(upgrade.preco * 1.5);
                         } else {
                             upgrade.comprado = true;
+                            upgrade.efeito();
                         }
-        
+                        salvarUpgrades();
                         atualizarLoja();
                         atualizarDisplay();
                         salvarProgresso(btc, btcPorClique, btcPorSegundo);
