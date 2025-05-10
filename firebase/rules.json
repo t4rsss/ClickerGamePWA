@@ -1,13 +1,42 @@
 {
-    "rules": {
-      ".read": false,
-      ".write": false,
-      "players": {
-        "$uid": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid"
-        }
+  "rules": {
+    ".read": "auth != null", // Requer que o usuário esteja autenticado para qualquer leitura
+    ".write": "auth != null", // Requer que o usuário esteja autenticado para qualquer escrita
+    
+    "players": {
+      "$playerId": {
+        // Permite que o jogador leia e atualize seus próprios dados
+        ".read": "$playerId === auth.uid",
+        ".write": "$playerId === auth.uid", // Somente o jogador pode escrever em seus próprios dados
+      }
+    },
+    
+    "upgrades": {
+      "$upgradeId": {
+        // Permite que qualquer usuário leia os upgrades
+        ".read": "true",
+        // Permite criar, atualizar ou excluir upgrades apenas se o usuário for um admin
+        ".write": "auth != null && auth.token.admin === true"
+      }
+    },
+
+    "fases": {
+      "$faseId": {
+        // Permite que qualquer usuário leia as fases
+        ".read": "true",
+        // Permite criar, atualizar ou excluir fases apenas se o usuário for um admin
+        ".write": "auth != null && auth.token.admin === true"
+      }
+    },
+
+    "compras": {
+      "$compraId": {
+        // Permite que o usuário leia e crie compras apenas se for o dono
+        ".read": "auth != null && auth.uid === data.child('userId').val()",
+        ".write": "auth != null && auth.uid === data.child('userId').val()",
       }
     }
   }
+}
+
   
