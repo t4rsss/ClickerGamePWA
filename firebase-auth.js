@@ -19,6 +19,7 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyBbd9rQZ1LwwTrMWY30txNugYsF_KVooGo",
   authDomain: "prj-crypto-clicker.firebaseapp.com",
+  databaseURL: "https://prj-crypto-clicker-default-rtdb.firebaseio.com/",
   projectId: "prj-crypto-clicker",
   storageBucket: "prj-crypto-clicker.appspot.com",
   messagingSenderId: "1031485029809",
@@ -69,25 +70,30 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((userCredential) => {
           const user = userCredential.user;
           const userId = user.uid;
-          
-          // Verificando se o usuário já existe no Realtime Database
-          const userRef = ref(db, 'users/' + userId);
-          get(userRef).then((snapshot) => {
-            if (snapshot.exists()) {
-              alert("Usuário já registrado no banco de dados!");
-            } else {
-              // Armazenando dados no Realtime Database
-              set(userRef, {
-                username: email,
-                email: email,
-                createdAt: new Date().toISOString()
+
+          // Referências das hierarquias
+          const userEmailRef = ref(db, `usuarios/${userId}/email`);
+          const jogadorRef = ref(db, `jogadores/${userId}`);
+
+          // Salvar email no caminho /usuarios
+          set(userEmailRef, email)
+            .then(() => {
+              // Salvar dados do jogador
+              set(jogadorRef, {
+                nome: email.split('@')[0], // ou pode criar campo para nome real
+                pontuacao: 0,
+                nivel: 1,
+                faseAtual: 1
+              }).then(() => {
+                alert("Conta criada com sucesso!");
+                window.location.href = "menu.html";
+              }).catch((error) => {
+                alert("Erro ao salvar jogador: " + error.message);
               });
-              alert("Conta criada com sucesso!");
-              window.location.href = "menu.html";
-            }
-          }).catch((error) => {
-            alert("Erro ao verificar dados: " + error.message);
-          });
+            })
+            .catch((error) => {
+              alert("Erro ao salvar e-mail: " + error.message);
+            });
         })
         .catch((error) => {
           alert("Erro ao registrar: " + error.message);
