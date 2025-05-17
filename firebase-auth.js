@@ -67,37 +67,28 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       createUserWithEmailAndPassword(auth, email, senha)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          const userId = user.uid;
+          .then((userCredential) => {
+            const user = userCredential.user;
+            const userId = user.uid;
+            const userRef = ref(db, 'usuarios/' + userId);
 
-          // Referências das hierarquias
-          const userEmailRef = ref(db, `usuarios/${userId}/email`);
-          const jogadorRef = ref(db, `jogadores/${userId}`);
+            console.log("Criando usuário no database com ID:", userId);
 
-          // Salvar email no caminho /usuarios
-          set(userEmailRef, email)
-            .then(() => {
-              // Salvar dados do jogador
-              set(jogadorRef, {
-                nome: email.split('@')[0], // ou pode criar campo para nome real
-                pontuacao: 0,
-                nivel: 1,
-                faseAtual: 1
-              }).then(() => {
-                alert("Conta criada com sucesso!");
-                window.location.href = "menu.html";
-              }).catch((error) => {
-                alert("Erro ao salvar jogador: " + error.message);
-              });
-            })
-            .catch((error) => {
-              alert("Erro ao salvar e-mail: " + error.message);
+            set(userRef, {
+              email: email,
+              createdAt: new Date().toISOString()
+            }).then(() => {
+              console.log("Usuário criado no database!");
+              alert("Conta criada com sucesso!");
+              window.location.href = "menu.html";
+            }).catch((error) => {
+              console.error("Erro ao criar usuário no database:", error);
+              alert("Erro ao criar usuário no database: " + error.message);
             });
-        })
-        .catch((error) => {
-          alert("Erro ao registrar: " + error.message);
-        });
+          })
+          .catch((error) => {
+            alert("Erro ao registrar: " + error.message);
+          });
     });
   }
 });
