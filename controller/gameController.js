@@ -1,7 +1,5 @@
 // Firebase imports
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getDatabase,
   ref,
@@ -33,7 +31,6 @@ const tecladoSound = new Audio('../assets/sounds/tecladosound.mp3');
 const buysound = new Audio('../assets/sounds/buysound.mp3');
 btnSound.load(); tecladoSound.load(); buysound.load();
 
-// Desbloqueio para mobile
 document.addEventListener('touchstart', () => {
   btnSound.play().catch(() => {});
   tecladoSound.play().catch(() => {});
@@ -44,7 +41,6 @@ document.addEventListener('touchstart', () => {
   buysound.currentTime = 0;
 }, { once: true });
 
-// Botões sonoros
 document.querySelectorAll('button').forEach(button => {
   button.addEventListener('click', () => {
     if (button.id !== 'hackear') {
@@ -235,7 +231,8 @@ function atualizarLoja() {
 }
 
 function inicializarJogo(progresso) {
-  inicializarUpgrades();
+  const openUpgradeBtn = document.getElementById("open-upgrade-menu");
+
   btc = progresso?.btc || 0;
   btcPorClique = progresso?.btcPorClique || 1;
   btcPorSegundo = progresso?.btcPorSegundo || 0;
@@ -243,9 +240,7 @@ function inicializarJogo(progresso) {
   atualizarDisplay();
   atualizarLoja();
 
-  const openUpgradeBtn = document.getElementById("open-upgrade-menu");
-
-  document.getElementById("open-upgrade-menu").addEventListener("click", () => {
+  openUpgradeBtn.addEventListener("click", () => {
     document.getElementById("upgrade-menu").classList.remove("hidden");
     hackearBtn.style.display = "none";
     openUpgradeBtn.style.display = "none";
@@ -270,7 +265,6 @@ function inicializarJogo(progresso) {
   }, 1000);
 }
 
-// Botões principais
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("novo-jogo-btn").addEventListener("click", async () => {
     await resetarFirebaseDoJogador();
@@ -279,12 +273,14 @@ document.addEventListener("DOMContentLoaded", () => {
     btcPorSegundo = 0;
     document.querySelector(".menu-container").style.display = "none";
     document.querySelector(".game-container").classList.remove("hidden");
+    inicializarUpgrades();
     inicializarJogo();
   });
 
   document.getElementById("continuar-jogo-btn").addEventListener("click", async () => {
-    const progresso = await carregarProgressoFirebase();
+    inicializarUpgrades();
     await carregarUpgradesFirebase();
+    const progresso = await carregarProgressoFirebase();
     document.querySelector(".menu-container").style.display = "none";
     document.querySelector(".game-container").classList.remove("hidden");
     inicializarJogo(progresso);
