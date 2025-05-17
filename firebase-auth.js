@@ -70,20 +70,31 @@ document.addEventListener("DOMContentLoaded", () => {
           .then((userCredential) => {
             const user = userCredential.user;
             const userId = user.uid;
-            const userRef = ref(db, 'usuarios/' + userId);
 
-            console.log("Criando usuário no database com ID:", userId);
-
-            set(userRef, {
+            // Dados iniciais para o jogador
+            const jogadorInicial = {
               email: email,
-              createdAt: new Date().toISOString()
-            }).then(() => {
-              console.log("Usuário criado no database!");
+              pontuacao: 0,
+              nivel: 1,
+              faseAtual: 1,
+              listaDeCompras: {}
+            };
+
+            // Referências para o database
+            const usuarioRef = ref(db, 'usuarios/' + userId);
+            const jogadorRef = ref(db, 'jogadores/' + userId);
+
+            // Gravar os dados no database
+            Promise.all([
+              set(usuarioRef, {
+                email: email
+              }),
+              set(jogadorRef, jogadorInicial)
+            ]).then(() => {
               alert("Conta criada com sucesso!");
               window.location.href = "menu.html";
             }).catch((error) => {
-              console.error("Erro ao criar usuário no database:", error);
-              alert("Erro ao criar usuário no database: " + error.message);
+              alert("Erro ao salvar dados: " + error.message);
             });
           })
           .catch((error) => {
