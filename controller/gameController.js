@@ -149,8 +149,6 @@ async function resetarFirebaseDoJogador() {
   await set(ref(db, `jogadores/${uid}`), {
     nome: user.email,
     pontuacao: 0,
-    nivel: 1,
-    faseAtual: 1,
     btcPorClique: 1,
     btcPorSegundo: 0,
     listaDeCompras: {}
@@ -313,6 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
     faseAtual = 1;
     document.querySelector(".menu-container").style.display = "none";
     document.querySelector(".game-container").classList.remove("hidden");
+    document.body.style.backgroundImage = "url('../assets/fundo.gif')";
     inicializarUpgrades();
     inicializarJogo();
   });
@@ -323,6 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
     await carregarProgressoFirebase();
     document.querySelector(".menu-container").style.display = "none";
     document.querySelector(".game-container").classList.remove("hidden");
+    document.body.style.backgroundImage = "url('../assets/fundo.gif')";
     inicializarJogo();
   });
 
