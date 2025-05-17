@@ -71,14 +71,27 @@ document.addEventListener("DOMContentLoaded", () => {
             const user = userCredential.user;
             const userId = user.uid;
 
-            // Dados iniciais para o jogador
-            const jogadorInicial = {
-              email: email,
+             // Criar estrutura em /usuarios
+            const usuariosRef = ref(db, 'usuarios/' + userId);
+            set(usuariosRef, {
+              email: email
+            });
+
+            // Criar estrutura em /jogadores
+            const jogadoresRef = ref(db, 'jogadores/' + userId);
+            set(jogadoresRef, {
+              nome: email.split("@")[0], 
               pontuacao: 0,
               nivel: 1,
               faseAtual: 1,
-              listaDeCompras: {}
-            };
+              listaDeCompras: {
+                compra0: {
+                  upgrade0: {
+                    valor: 0
+                  }
+                }
+              }
+            });
 
             // Referências para o database
             const usuarioRef = ref(db, 'usuarios/' + userId);
