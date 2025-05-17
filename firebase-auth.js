@@ -7,6 +7,14 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  child
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBbd9rQZ1LwwTrMWY30txNugYsF_KVooGo",
@@ -19,6 +27,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getDatabase(app); 
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 
@@ -57,9 +66,28 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       createUserWithEmailAndPassword(auth, email, senha)
-        .then(() => {
-          alert("Conta criada com sucesso!");
-          window.location.href = "menu.html";
+        .then((userCredential) => {
+          const user = userCredential.user;
+          const userId = user.uid;
+          
+          // Verificando se o usuário já existe no Realtime Database
+          const userRef = ref(db, 'users/' + userId);
+          get(userRef).then((snapshot) => {
+            if (snapshot.exists()) {
+              alert("Usuário já registrado no banco de dados!");
+            } else {
+              // Armazenando dados no Realtime Database
+              set(userRef, {
+                username: email,
+                email: email,
+                createdAt: new Date().toISOString()
+              });
+              alert("Conta criada com sucesso!");
+              window.location.href = "menu.html";
+            }
+          }).catch((error) => {
+            alert("Erro ao verificar dados: " + error.message);
+          });
         })
         .catch((error) => {
           alert("Erro ao registrar: " + error.message);
@@ -67,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
 
 
 const loginContainer = document.getElementById('login-container');
