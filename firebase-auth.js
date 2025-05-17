@@ -75,9 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
           const jogadorInicial = {
             nome: email,
             pontuacao: 0,
-            nivel: 1,
-            faseAtual: 1,
-            listaDeCompras: {}
           };
 
           // Referências para o database
