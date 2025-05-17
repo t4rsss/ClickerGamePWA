@@ -1,5 +1,7 @@
 // Firebase imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getDatabase,
   ref,
@@ -25,12 +27,25 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
+// Variáveis principais
+let btc = 0;
+let btcPorClique = 1;
+let btcPorSegundo = 0;
+let faseAtual = 1;
+
+let upgrades = {
+  clique: [],
+  producao: [],
+  ambiente: []
+};
+
 // Sons
 const btnSound = new Audio('../assets/sounds/btnsound.mp3');
 const tecladoSound = new Audio('../assets/sounds/tecladosound.mp3');
 const buysound = new Audio('../assets/sounds/buysound.mp3');
 btnSound.load(); tecladoSound.load(); buysound.load();
 
+// Desbloqueio para mobile
 document.addEventListener('touchstart', () => {
   btnSound.play().catch(() => {});
   tecladoSound.play().catch(() => {});
@@ -41,36 +56,20 @@ document.addEventListener('touchstart', () => {
   buysound.currentTime = 0;
 }, { once: true });
 
-document.querySelectorAll('button').forEach(button => {
-  button.addEventListener('click', () => {
-    if (button.id !== 'hackear') {
-      btnSound.currentTime = 0;
-      btnSound.play();
-    }
-  });
-});
-
-const hackearBtn = document.getElementById('hackear');
-if (hackearBtn) {
-  hackearBtn.addEventListener('click', () => {
-    tecladoSound.currentTime = 0;
-    tecladoSound.play();
-  });
-}
-
-let btc = 0;
-let btcPorClique = 1;
-let btcPorSegundo = 0;
-let upgrades = {
-  clique: [],
-  producao: [],
-  ambiente: []
-};
-
+// Funções utilitárias
 function abreviarPreco(preco) {
   if (preco >= 1000000) return (preco / 1000000).toFixed(1) + 'M';
   if (preco >= 1000) return (preco / 1000).toFixed(1) + 'k';
   return preco.toString();
+}
+
+function nomeDaFasePorNivel(nivel) {
+  switch (nivel) {
+    case 1: return "Porão";
+    case 2: return "Apartamento";
+    case 3: return "Empresa";
+    default: return "Desconhecida";
+  }
 }
 
 function atualizarDisplay() {
@@ -83,7 +82,17 @@ function salvarProgresso() {
   const user = auth.currentUser;
   if (!user) return;
   const uid = user.uid;
-  update(ref(db, `jogadores/${uid}`), { pontuacao: btc, btcPorClique, btcPorSegundo });
+
+  update(ref(db, `jogadores/${uid}`), {
+    pontuacao: btc,
+    btcPorClique,
+    btcPorSegundo
+  });
+
+  update(ref(db, `jogadores/${uid}/fase`), {
+    nivel: faseAtual,
+    nome: nomeDaFasePorNivel(faseAtual)
+  });
 
   for (let categoria in upgrades) {
     upgrades[categoria].forEach(upg => {
@@ -101,13 +110,16 @@ async function carregarProgressoFirebase() {
   const snapshot = await get(ref(db, `jogadores/${uid}`));
   if (snapshot.exists()) {
     const data = snapshot.val();
-    return {
-      btc: data.pontuacao || 0,
-      btcPorClique: data.btcPorClique || 1,
-      btcPorSegundo: data.btcPorSegundo || 0
-    };
+    btc = data.pontuacao || 0;
+    btcPorClique = data.btcPorClique || 1;
+    btcPorSegundo = data.btcPorSegundo || 0;
   }
-  return null;
+
+  const faseSnap = await get(ref(db, `jogadores/${uid}/fase`));
+  if (faseSnap.exists()) {
+    const fase = faseSnap.val();
+    faseAtual = fase.nivel || 1;
+  }
 }
 
 async function carregarUpgradesFirebase() {
@@ -117,26 +129,18 @@ async function carregarUpgradesFirebase() {
   const snapshot = await get(ref(db, `jogadores/${uid}/upgrades`));
   if (!snapshot.exists()) return;
   const upgradesDoBanco = snapshot.val();
-
   for (let categoria in upgrades) {
     upgrades[categoria].forEach(upg => {
       const salvo = upgradesDoBanco[upg.nome];
       if (salvo && salvo.nivelUpgrade) {
         const nivel = salvo.nivelUpgrade;
         upg.nivel = nivel;
-
-        // Aplica os efeitos progressivamente
-        for (let i = 1; i < nivel; i++) {
-          upg.efeito();
-        }
-
-        // Recalcula o preço com base no nível
+        for (let i = 1; i < nivel; i++) upg.efeito();
         upg.preco = Math.floor(upg.preco * Math.pow(1.5, nivel - 1));
       }
     });
   }
 }
-
 
 async function resetarFirebaseDoJogador() {
   const user = auth.currentUser;
@@ -153,6 +157,10 @@ async function resetarFirebaseDoJogador() {
   });
   await set(ref(db, `compras/${uid}`), null);
   await set(ref(db, `jogadores/${uid}/upgrades`), null);
+  await set(ref(db, `jogadores/${uid}/fase`), {
+    nivel: 1,
+    nome: "Porão"
+  });
 }
 
 function inicializarUpgrades() {
@@ -168,10 +176,17 @@ function inicializarUpgrades() {
       { nome: "Melhorar Mineração", preco: 100, comprado: false, repetivel: true, nivel: 1, efeito: function () { btcPorSegundo += 2 * this.nivel; } }
     ],
     ambiente: [
-      { nome: "Melhorar Casa", preco: 400000, comprado: false, nivel: 1, repetivel: false, efeito: () => {
+      {
+        nome: "Melhorar Casa", preco: 400000, comprado: false, nivel: 1, repetivel: false, efeito: () => {
+          if (faseAtual < 3) faseAtual++;
           const computerImage = document.querySelector('.computer');
-          if (computerImage) computerImage.src = "../assets/apartamento.gif";
-      } }
+          if (computerImage) {
+            if (faseAtual === 2) computerImage.src = "../assets/apartamento.gif";
+            else if (faseAtual === 3) computerImage.src = "../assets/empresa.gif";
+            else computerImage.src = "../assets/Porao.gif";
+          }
+        }
+      }
     ]
   };
 }
@@ -240,15 +255,12 @@ function atualizarLoja() {
   });
 }
 
-function inicializarJogo(progresso) {
-  const openUpgradeBtn = document.getElementById("open-upgrade-menu");
-
-  btc = progresso?.btc || 0;
-  btcPorClique = progresso?.btcPorClique || 1;
-  btcPorSegundo = progresso?.btcPorSegundo || 0;
-
+function inicializarJogo() {
   atualizarDisplay();
   atualizarLoja();
+
+  const openUpgradeBtn = document.getElementById("open-upgrade-menu");
+  const hackearBtn = document.getElementById("hackear");
 
   openUpgradeBtn.addEventListener("click", () => {
     document.getElementById("upgrade-menu").classList.remove("hidden");
@@ -273,6 +285,14 @@ function inicializarJogo(progresso) {
     atualizarDisplay();
     salvarProgresso();
   }, 1000);
+
+  // Aplica imagem de fundo correta com base na fase
+  const computerImage = document.querySelector('.computer');
+  if (computerImage) {
+    if (faseAtual === 2) computerImage.src = "../assets/apartamento.gif";
+    else if (faseAtual === 3) computerImage.src = "../assets/empresa.gif";
+    else computerImage.src = "../assets/Porao.gif";
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -281,6 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btc = 0;
     btcPorClique = 1;
     btcPorSegundo = 0;
+    faseAtual = 1;
     document.querySelector(".menu-container").style.display = "none";
     document.querySelector(".game-container").classList.remove("hidden");
     inicializarUpgrades();
@@ -290,10 +311,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("continuar-jogo-btn").addEventListener("click", async () => {
     inicializarUpgrades();
     await carregarUpgradesFirebase();
-    const progresso = await carregarProgressoFirebase();
+    await carregarProgressoFirebase();
     document.querySelector(".menu-container").style.display = "none";
     document.querySelector(".game-container").classList.remove("hidden");
-    inicializarJogo(progresso);
+    inicializarJogo();
   });
 
   document.querySelector(".menu-container").style.display = "block";
