@@ -184,7 +184,7 @@ function inicializarUpgrades() {
       { nome: "Melhorar Mineração", preco: 100, comprado: false, repetivel: true, nivel: 1, efeito: function () { btcPorSegundo += 2 * this.nivel; } }
     ],
     ambiente: [
-     {
+    {
         nome: "Melhorar Casa",
         preco: 400000,
         comprado: false,
@@ -193,9 +193,8 @@ function inicializarUpgrades() {
         efeito: function () {
             if (faseAtual < 3) {
             faseAtual++;
-            this.nivel++;
-            this.preco = Math.floor(this.preco * 1.5);
             }
+
             const computerImage = document.querySelector('.computer');
             if (computerImage) {
             if (faseAtual === 2) computerImage.src = "../assets/apartamento.gif";
