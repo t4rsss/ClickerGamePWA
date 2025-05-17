@@ -243,6 +243,8 @@ function inicializarJogo(progresso) {
   atualizarDisplay();
   atualizarLoja();
 
+  const openUpgradeBtn = document.getElementById("open-upgrade-menu");
+
   document.getElementById("open-upgrade-menu").addEventListener("click", () => {
     document.getElementById("upgrade-menu").classList.remove("hidden");
     hackearBtn.style.display = "none";
