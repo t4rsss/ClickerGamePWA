@@ -125,22 +125,32 @@ async function carregarProgressoFirebase() {
 async function carregarUpgradesFirebase() {
   const user = auth.currentUser;
   if (!user) return;
+
   const uid = user.uid;
   const snapshot = await get(ref(db, `jogadores/${uid}/upgrades`));
   if (!snapshot.exists()) return;
+
   const upgradesDoBanco = snapshot.val();
+
   for (let categoria in upgrades) {
     upgrades[categoria].forEach(upg => {
       const salvo = upgradesDoBanco[upg.nome];
       if (salvo && salvo.nivelUpgrade) {
         const nivel = salvo.nivelUpgrade;
         upg.nivel = nivel;
-        for (let i = 1; i < nivel; i++) upg.efeito();
+
+        // Aplica efeitos acumulativos apenas se não for "Melhorar Casa"
+        if (upg.nome !== "Melhorar Casa") {
+          for (let i = 1; i < nivel; i++) upg.efeito();
+        }
+
+        // Recalcula o preço com base no nível
         upg.preco = Math.floor(upg.preco * Math.pow(1.5, nivel - 1));
       }
     });
   }
 }
+
 
 async function resetarFirebaseDoJogador() {
   const user = auth.currentUser;
