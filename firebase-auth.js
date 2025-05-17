@@ -71,7 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const user = userCredential.user;
             const userId = user.uid;
 
-             // Criar estrutura em /usuarios
+            console.log("Criando usuário no database com ID:", userId);
+
+            // Criar estrutura em /usuarios
             const usuariosRef = ref(db, 'usuarios/' + userId);
             set(usuariosRef, {
               email: email
@@ -80,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Criar estrutura em /jogadores
             const jogadoresRef = ref(db, 'jogadores/' + userId);
             set(jogadoresRef, {
-              nome: email.split("@")[0], 
+              nome: email.split("@")[0], // ou peça um nome separado no cadastro
               pontuacao: 0,
               nivel: 1,
               faseAtual: 1,
@@ -93,22 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
               }
             });
 
-            // Referências para o database
-            const usuarioRef = ref(db, 'usuarios/' + userId);
-            const jogadorRef = ref(db, 'jogadores/' + userId);
-
-            // Gravar os dados no database
-            Promise.all([
-              set(usuarioRef, {
-                email: email
-              }),
-              set(jogadorRef, jogadorInicial)
-            ]).then(() => {
-              alert("Conta criada com sucesso!");
-              window.location.href = "menu.html";
-            }).catch((error) => {
-              alert("Erro ao salvar dados: " + error.message);
-            });
+            alert("Conta criada com sucesso!");
+            window.location.href = "menu.html";
           })
           .catch((error) => {
             alert("Erro ao registrar: " + error.message);
