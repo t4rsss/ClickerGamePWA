@@ -1,17 +1,17 @@
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+// Firebase imports
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getDatabase,
   ref,
-  set,
-  get,
   update,
+  get,
+  set,
   push
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Inicialização obrigatória
 const firebaseConfig = {
   apiKey: "AIzaSyBbd9rQZ1LwwTrMWY30txNugYsF_KVooGo",
   authDomain: "prj-crypto-clicker.firebaseapp.com",
@@ -23,10 +23,9 @@ const firebaseConfig = {
   measurementId: "G-5YM5FDLJF7"
 };
 
-const app = initializeApp(firebaseConfig); 
+const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
-
 
 // Sons
 const btnSound = new Audio('../assets/sounds/btnsound.mp3');
@@ -63,7 +62,6 @@ if (hackearBtn) {
   });
 }
 
-// Valores globais
 let btc = 0;
 let btcPorClique = 1;
 let btcPorSegundo = 0;
@@ -90,6 +88,14 @@ function salvarProgresso() {
   if (!user) return;
   const uid = user.uid;
   update(ref(db, `jogadores/${uid}`), { pontuacao: btc, btcPorClique, btcPorSegundo });
+
+  for (let categoria in upgrades) {
+    upgrades[categoria].forEach(upg => {
+      update(ref(db, `jogadores/${uid}/upgrades/${upg.nome}`), {
+        nivelUpgrade: upg.nivel
+      });
+    });
+  }
 }
 
 async function carregarProgressoFirebase() {
@@ -109,7 +115,10 @@ async function carregarProgressoFirebase() {
 }
 
 async function carregarUpgradesFirebase() {
-  const snapshot = await get(ref(db, "upgrades"));
+  const user = auth.currentUser;
+  if (!user) return;
+  const uid = user.uid;
+  const snapshot = await get(ref(db, `jogadores/${uid}/upgrades`));
   if (!snapshot.exists()) return;
   const upgradesDoBanco = snapshot.val();
   for (let categoria in upgrades) {
@@ -137,13 +146,7 @@ async function resetarFirebaseDoJogador() {
     listaDeCompras: {}
   });
   await set(ref(db, `compras/${uid}`), null);
-  const snapshot = await get(ref(db, "upgrades"));
-  if (snapshot.exists()) {
-    const upgradesBanco = snapshot.val();
-    for (let nome in upgradesBanco) {
-      await update(ref(db, `upgrades/${nome}`), { nivelUpgrade: 1 });
-    }
-  }
+  await set(ref(db, `jogadores/${uid}/upgrades`), null);
 }
 
 function inicializarUpgrades() {
@@ -216,13 +219,6 @@ function atualizarLoja() {
         const user = auth.currentUser;
         if (user) {
           const uid = user.uid;
-          const upgradePath = `upgrades/${upgrade.nome}`;
-          const snap = await get(ref(db, upgradePath));
-          if (!snap.exists()) {
-            await set(ref(db, upgradePath), { preco: upgrade.preco, nivelUpgrade: upgrade.nivel });
-          } else {
-            await update(ref(db, upgradePath), { nivelUpgrade: upgrade.nivel });
-          }
           const compraRef = push(ref(db, `compras/${uid}`));
           await set(compraRef, {
             nomeUpgrade: upgrade.nome,
