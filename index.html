@@ -43,5 +43,14 @@
         });
     </script>
 
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('pwabuilder-sw.js')
+      .then(() => console.log('✅ Service Worker registrado com sucesso'))
+      .catch((error) => console.error('❌ Erro ao registrar o Service Worker:', error));
+  }
+    </script>
+
+
 </body>
 </html>
