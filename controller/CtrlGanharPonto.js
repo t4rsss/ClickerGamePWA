@@ -1,0 +1,3 @@
+btc += btcPorClique;
+atualizarDisplay();
+salvarProgresso();
