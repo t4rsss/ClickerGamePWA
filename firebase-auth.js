@@ -66,36 +66,43 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      createUserWithEmailAndPassword(auth, email, senha)
+   createUserWithEmailAndPassword(auth, email, senha)
         .then((userCredential) => {
           const user = userCredential.user;
           const userId = user.uid;
 
-          // Dados iniciais para o jogador
           const jogadorInicial = {
             nome: email,
             pontuacao: 0,
+            btcPorClique: 1,
+            btcPorSegundo: 0,
+            upgrades: {},
+            listaDeCompras: {},
+            fase: {
+              nivel: 1,
+              nome: "Porão"
+            }
           };
 
-          // Referências para o database
           const usuarioRef = ref(db, 'usuarios/' + userId);
           const jogadorRef = ref(db, 'jogadores/' + userId);
 
-          // Gravar os dados no database
+          // Gravar as duas seções
           Promise.all([
             set(usuarioRef, { email: email }),
             set(jogadorRef, jogadorInicial)
-          ]).then(() => {
+          ])
+          .then(() => {
             alert("Conta criada com sucesso!");
             window.location.href = "menu.html";
-          }).catch((error) => {
-            alert("Erro ao salvar dados: " + error.message);
+          })
+          .catch((error) => {
+            alert("Erro ao salvar dados no banco: " + error.message);
           });
         })
         .catch((error) => {
           alert("Erro ao registrar: " + error.message);
         });
-
     });
   }
 });
