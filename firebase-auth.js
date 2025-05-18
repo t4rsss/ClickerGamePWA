@@ -5,16 +5,14 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase
 import {
   getAuth,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import {
   getDatabase,
   ref,
-  set,
-  get,
-  child
+  set
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
 
 const firebaseConfig = {
   apiKey: "AIzaSyBbd9rQZ1LwwTrMWY30txNugYsF_KVooGo",
@@ -28,7 +26,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app); 
+const db = getDatabase(app);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 
@@ -66,38 +64,45 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-   createUserWithEmailAndPassword(auth, email, senha)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          const userId = user.uid;
+      createUserWithEmailAndPassword(auth, email, senha)
+        .then(() => {
+          // Espera o Firebase autenticar totalmente o usuário antes de salvar
+          onAuthStateChanged(auth, (user) => {
+            if (user) {
+              const uid = user.uid;
 
-          const jogadorInicial = {
-            nome: email,
-            pontuacao: 0,
-            btcPorClique: 1,
-            btcPorSegundo: 0,
-            upgrades: {},
-            listaDeCompras: {},
-            fase: {
-              nivel: 1,
-              nome: "Porão"
+              const jogadorInicial = {
+                nome: email,
+                pontuacao: 0,
+                btcPorClique: 1,
+                btcPorSegundo: 0,
+                upgrades: {},
+                listaDeCompras: {},
+                fase: {
+                  nivel: 1,
+                  nome: "Porão"
+                }
+              };
+
+              const usuarioRef = ref(db, 'usuarios/' + uid);
+              const jogadorRef = ref(db, 'jogadores/' + uid);
+
+              Promise.all([
+                set(usuarioRef, { email: email }),
+                set(jogadorRef, jogadorInicial)
+              ])
+              .then(() => {
+                alert("Conta criada com sucesso!");
+                window.location.href = "menu.html";
+              })
+              .catch((error) => {
+                alert("Erro ao salvar dados no banco: " + error.message);
+                console.error(error);
+              });
+
+            } else {
+              alert("Erro: usuário não autenticado após registro.");
             }
-          };
-
-          const usuarioRef = ref(db, 'usuarios/' + userId);
-          const jogadorRef = ref(db, 'jogadores/' + userId);
-
-          // Gravar as duas seções
-          Promise.all([
-            set(usuarioRef, { email: email }),
-            set(jogadorRef, jogadorInicial)
-          ])
-          .then(() => {
-            alert("Conta criada com sucesso!");
-            window.location.href = "menu.html";
-          })
-          .catch((error) => {
-            alert("Erro ao salvar dados no banco: " + error.message);
           });
         })
         .catch((error) => {
@@ -107,16 +112,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
+// Alternar entre login e registro
 const loginContainer = document.getElementById('login-container');
 const registerContainer = document.getElementById('register-container');
 
 document.getElementById('show-register').onclick = () => {
-    loginContainer.style.display = 'none';
-    registerContainer.style.display = 'block';
+  loginContainer.style.display = 'none';
+  registerContainer.style.display = 'block';
 };
 
 document.getElementById('show-login').onclick = () => {
-    registerContainer.style.display = 'none';
-    loginContainer.style.display = 'block';
+  registerContainer.style.display = 'none';
+  loginContainer.style.display = 'block';
 };
