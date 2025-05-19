@@ -1,4 +1,3 @@
-// compraController.js
 import {
   getDatabase,
   ref,
